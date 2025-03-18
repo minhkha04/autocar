@@ -319,7 +319,7 @@
                                         <input type="text" required=""  placeholder="Input name service" name="txtName" class="form-control" >
                                     </div>
                                     <div class="col-3">
-                                        <input type="number" required=""  placeholder="Input hourly rate" name="txtHourlyRate" class="form-control" >
+                                        <input type="number" required=""  placeholder="Input hourly rate" name="txtHourlyRate" class="form-control" min="1">
                                     </div>
                                     <div class="col-3">
                                         <button type="submit" name="txtMethod" value="create" class="btn btn-primary">Save</button>
@@ -403,7 +403,7 @@
                                                     <div class="col-12">
                                                         <div class="mb-3">
                                                             <label for="hours" class="form-label">Hours:</label>
-                                                            <input type="number" class="form-control" name="txtHourlyRate" id="hourlyRate" required value="${item.hourlyRate}"/>
+                                                            <input type="number" class="form-control" name="txtHourlyRate" id="hourlyRate" required value="${item.hourlyRate}" min="1"/>
                                                         </div>
                                                     </div>
                                                 </div>

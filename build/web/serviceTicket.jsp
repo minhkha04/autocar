@@ -328,15 +328,14 @@
                             <td><%= row[0]%></td>
                             <td><%= row[1]%></td>
                             <td><%= row[2]%></td>
+                            <td><%= row[3]%></td>    
                             <td><%= row[4]%></td>
+                            <td><%= row[5]%></td>
                             <td><%= row[6]%></td>
                             <td><%= row[7]%></td>
-                            <td><%= row[3]%></td>            
-                            <td><%= row[5]%></td>
                             <td><%= row[8]%></td>
                             <td><fmt:formatNumber value="<%= row[9]%>" pattern="#,##0 VNĐ" /></td>
                             <td><%= row[10]%></td>
-                            <!-- Thay thế thẻ a cũ -->
                             <td>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUdpate<%= row[0]%><%= row[11]%>">
                                     Edit

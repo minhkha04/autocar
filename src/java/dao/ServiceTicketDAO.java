@@ -25,15 +25,24 @@ public class ServiceTicketDAO {
     public List<Object[]> getServiceTickets(String mechanicID) {
         List<Object[]> list = new ArrayList<>();
         Connection cn = null;
-        String query = "SELECT ST.serviceTicketID, ST.dateReceived, ST.dateReturned, "
-                + "C.custID, C.custName, ST.carID, S.serviceName,  "
-                + "M.mechanicName, SM.hours, SM.rate, SM.comment, S.serviceID "
-                + "FROM ServiceTicket ST "
-                + "JOIN Customer C ON ST.custID = C.custID "
-                + "JOIN ServiceMehanic SM ON ST.serviceTicketID = SM.serviceTicketID "
-                + "JOIN Service S ON SM.serviceID = S.serviceID "
-                + "JOIN Mechanic M ON SM.mechanicID = M.mechanicID "
-                + "WHERE SM.mechanicID = ?";
+        String query = "SELECT ST.serviceTicketID, \n"
+                + "       ST.dateReceived, \n"
+                + "       ST.dateReturned, \n"
+                + "       C.custName, \n"
+                + "       S.serviceName, \n"
+                + "       M.mechanicName,  -- Đặt đúng vị trí trước Customer Id\n"
+                + "       C.custID, \n"
+                + "       ST.carID,  -- Đặt đúng vị trí sau Customer Id\n"
+                + "       SM.hours, \n"
+                + "       SM.rate, \n"
+                + "       SM.comment, \n"
+                + "       S.serviceID\n"
+                + "FROM ServiceTicket ST\n"
+                + "JOIN Customer C ON ST.custID = C.custID\n"
+                + "JOIN ServiceMehanic SM ON ST.serviceTicketID = SM.serviceTicketID\n"
+                + "JOIN Service S ON SM.serviceID = S.serviceID\n"
+                + "JOIN Mechanic M ON SM.mechanicID = M.mechanicID\n"
+                + "WHERE SM.mechanicID = ?;";
         try {
             cn = DBUtils.getConnection(); // Mở kết nối SQL
             PreparedStatement ps = cn.prepareStatement(query);
@@ -45,11 +54,11 @@ public class ServiceTicketDAO {
                     rs.getInt("serviceTicketID"), //0
                     rs.getDate("dateReceived") != null ? rs.getDate("dateReceived").toLocalDate() : null, //1
                     rs.getDate("dateReturned") != null ? rs.getDate("dateReturned").toLocalDate() : null, //2
-                    rs.getInt("custID"), //3
-                    rs.getString("custName"), //4
-                    rs.getString("carID"), //5
-                    rs.getString("serviceName"), //6
-                    rs.getString("mechanicName"), //7
+                    rs.getString("custName"), //3
+                    rs.getString("serviceName"), //4
+                    rs.getString("mechanicName"), //5
+                    rs.getInt("custID"), //6
+                    rs.getString("carID"), //7
                     rs.getDouble("hours"),//8
                     rs.getDouble("rate"),//9
                     rs.getString("comment"),//10
@@ -74,18 +83,27 @@ public class ServiceTicketDAO {
     public List<Object[]> searchServiceTicket(Integer custID, Integer carID, String dateReceived, String mechanicID) {
         List<Object[]> list = new ArrayList<>();
         Connection cn = null;
-        String query = "SELECT ST.serviceTicketID, ST.dateReceived, ST.dateReturned, "
-                + "C.custID, C.custName, ST.carID, S.serviceName, S.hourlyRate, "
-                + "M.mechanicName, SM.hours, SM.rate, SM.comment "
-                + "FROM [dbo].[ServiceTicket] ST "
-                + "JOIN Customer C ON ST.custID = C.custID "
-                + "LEFT JOIN ServiceMehanic SM ON ST.serviceTicketID = SM.serviceTicketID "
-                + "LEFT JOIN Service S ON SM.serviceID = S.serviceID "
-                + "LEFT JOIN Mechanic M ON SM.mechanicID = M.mechanicID "
-                + "WHERE (? IS NULL OR ST.custID = ?) "
-                + "AND (? IS NULL OR ST.carID = ?) "
-                + "AND (? IS NULL OR CAST(ST.dateReceived AS DATE) = ?) "
-                + "AND (? IS NULL OR SM.mechanicID = ?)";  // Sửa điều kiện NULL
+        String query = "SELECT ST.serviceTicketID, \n"
+                + "       ST.dateReceived, \n"
+                + "       ST.dateReturned, \n"
+                + "       C.custName, \n"
+                + "       S.serviceName, \n"
+                + "       M.mechanicName, \n"
+                + "       C.custID, \n"
+                + "       ST.carID, \n"
+                + "       SM.hours, \n"
+                + "       SM.rate, \n"
+                + "       SM.comment, \n"
+                + "       S.serviceID\n"
+                + "FROM [dbo].[ServiceTicket] ST\n"
+                + "JOIN Customer C ON ST.custID = C.custID\n"
+                + "LEFT JOIN ServiceMehanic SM ON ST.serviceTicketID = SM.serviceTicketID\n"
+                + "LEFT JOIN Service S ON SM.serviceID = S.serviceID\n"
+                + "LEFT JOIN Mechanic M ON SM.mechanicID = M.mechanicID\n"
+                + "WHERE (? IS NULL OR ST.custID = ?) \n"
+                + "AND (? IS NULL OR ST.carID = ?) \n"
+                + "AND (? IS NULL OR CAST(ST.dateReceived AS DATE) = ?) \n"
+                + "AND (? IS NULL OR SM.mechanicID = ?)";  
 
         try {
             cn = DBUtils.getConnection();
@@ -108,27 +126,22 @@ public class ServiceTicketDAO {
 
             ps.setObject(7, mechanicID);
             ps.setObject(8, mechanicID);
-
-            // Debugging - Kiểm tra tham số
-            System.out.println("Executing Query: " + query);
-            System.out.println("Parameters: custID=" + custID + ", carID=" + carID + ", dateReceived=" + dateReceived + ", mechanicID=" + mechanicID);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 Object[] row = new Object[]{
-                    rs.getInt("serviceTicketID"),
-                    rs.getDate("dateReceived") != null ? rs.getDate("dateReceived").toLocalDate() : null,
-                    rs.getDate("dateReturned") != null ? rs.getDate("dateReturned").toLocalDate() : null,
-                    rs.getInt("custID"),
-                    rs.getString("custName"),
-                    rs.getString("carID"),
-                    rs.getString("serviceName"),
-                    rs.getDouble("hourlyRate"),
-                    rs.getString("mechanicName"),
-                    rs.getObject("hours") != null ? rs.getInt("hours") : null,
-                    rs.getObject("rate") != null ? rs.getDouble("rate") : null,
-                    rs.getString("comment")
+                    rs.getInt("serviceTicketID"),//0
+                    rs.getDate("dateReceived") != null ? rs.getDate("dateReceived").toLocalDate() : null,//1
+                    rs.getDate("dateReturned") != null ? rs.getDate("dateReturned").toLocalDate() : null,//2
+                    rs.getString("custName"),//3
+                    rs.getString("serviceName"),//4
+                    rs.getString("mechanicName"),//5
+                    rs.getInt("custID"),//6
+                    rs.getString("carID"),//7
+                    rs.getObject("hours") != null ? rs.getInt("hours") : null,//8
+                    rs.getObject("rate") != null ? rs.getDouble("rate") : null,//9
+                    rs.getString("comment"),//10
+                    rs.getString("serviceID")//11
                 };
                 list.add(row);
             }
